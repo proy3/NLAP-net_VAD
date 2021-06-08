@@ -9,7 +9,6 @@ import cv2
 import sys
 import os
 import argparse
-import shutil
 import datetime
 from tqdm import tqdm
 from natsort import natsorted
@@ -23,13 +22,9 @@ if __name__ == '__main__':
     parser.add_argument('--det_task', type=str, default=ds.DEFAULT_DET_TASK, help='CenterNet task.')
     parser.add_argument('--det_dataset', type=str, default=ds.DEFAULT_DET_DATASET, help='CenterNet dataset.')
     parser.add_argument('--det_arch', type=str, default=ds.DEFAULT_DET_ARCH, help='CenterNet architecture.')
-    util.add_bool_parser(parser, 'get_flows', False)
     util.add_bool_parser(parser, 'save_frames', False)
-    parser.add_argument('--flow_arch', type=str, default=ds.DEFAULT_FLOW_ARCH, help='FlowNet2 architecture.')
-    parser.add_argument('--rand_seed', type=int, default=ds.DEFAULT_RAND_SEED, help='Random seed value.')
     parser.add_argument('--pretrained_path', type=str, default=ds.PRETRAINED_PATH, help='Pretrained models path.')
     parser.add_argument('--centernet_path', type=str, default=os.environ['CenterNet_ROOT'], help='CenterNet path.')
-    parser.add_argument('--flownet2_path', type=str, default=os.environ['FlowNet2_ROOT'], help='FlowNet2 path.')
     parser.add_argument('--datasets_path', type=str, default=ds.DATASETS_PATH, help='Datasets path.')
     parser.add_argument('--estimations_path', type=str, default=ds.ESTIMATIONS_PATH, help='Estimations path.')
     parser.add_argument('--temp_path', type=str, default=ds.TEMP_PATH, help='Temp folder path.')
@@ -42,12 +37,6 @@ if __name__ == '__main__':
     det_model_name = f'{args.det_task}_{args.det_dataset}_{ds.DET_MODEL_NAMES[args.det_arch]}'
     det_model_path = os.path.join(args.pretrained_path, ds.DET_METHOD_NAME, f'{det_model_name}.pth')
     assert os.path.isfile(det_model_path), 'Model path does not exist.'
-
-    if args.get_flows:
-        flow_model_path = os.path.join(args.pretrained_path, ds.FLOW_METHOD_NAME,
-                                       '{}_checkpoint.pth.tar'.format(args.flow_arch))
-    else:
-        flow_model_path = None
 
     sys.path.insert(0, os.path.join(args.centernet_path, 'src'))
     sys.path.insert(0, os.path.join(args.centernet_path, 'src', 'lib'))
@@ -74,7 +63,6 @@ if __name__ == '__main__':
         video_names = natsorted(video_names)
 
         data_det_times = []
-        data_flow_times = []
         data_total_times = []
 
         for video in tqdm(video_names, file=sys.stdout,
@@ -133,60 +121,6 @@ if __name__ == '__main__':
                 frames_data = np.array(frames_data)
                 np.save(os.path.join(video_est_dir, ds.FRAMES_FILENAME), frames_data)
 
-            if args.get_flows:
-                # Temp dir
-                temp_flow_dirname = 'flow_{}'.format(time.time())
-                temp_flow_dir = os.path.join(args.temp_path, temp_flow_dirname)
-                if not os.path.exists(temp_flow_dir):
-                    os.makedirs(temp_flow_dir)
-
-                # run detection process time
-                start = time.time()
-                util.subprocess_cmd('cd {}; python main.py {}'
-                                    .format(args.flownet2_path,
-                                            ' '.join(['--inference',
-                                                      '--inference_visualize',
-                                                      '--model {}'.format(args.flow_arch),
-                                                      '--save_flow',
-                                                      '--save {}'.format(temp_flow_dir),
-                                                      '--inference_dataset ImagesFromFolder',
-                                                      '--inference_dataset_root {}'.format(video_dir),
-                                                      '--resume {}'.format(flow_model_path)])))
-                video_flow_time = time.time() - start
-
-                # Resize the flow images to the original image size
-                temp_flow_vis_dir = os.path.join(temp_flow_dir, 'inference', 'run.epoch-0-flow-vis')
-
-                flow_images = [f for f in os.listdir(temp_flow_vis_dir)
-                               if os.path.isfile(os.path.join(temp_flow_vis_dir, f)) and
-                               any(f[f.rfind('.'):] == ext for ext in ds.IMAGE_EXTENSIONS)]
-                flow_images = natsorted(flow_images)
-
-                flow_data = []
-
-                for flow_name in tqdm(flow_images, file=sys.stdout,
-                                      desc='{} --> {} - {} - {}'.format(ds.FLOW_METHOD_NAME,
-                                                                        args.dataset, data_dirname, video)):
-                    # Resize flow
-                    img = cv2.imread(os.path.join(temp_flow_vis_dir, flow_name))
-                    img_res = cv2.resize(img, (raw_img_w, raw_img_h))
-                    # Gray-scaled
-                    gray_img = cv2.cvtColor(img_res, cv2.COLOR_BGR2GRAY)
-                    # Invert the color
-                    gray_img = cv2.bitwise_not(gray_img)
-                    flow_data.append(gray_img)
-
-                # Remove the temp directories
-                shutil.rmtree(temp_flow_dir)
-
-                # Save flows
-                flow_data = np.array(flow_data)
-                np.save(os.path.join(video_est_dir, ds.FLOW_FILENAME), flow_data)
-
-                # Store video running summary (time)
-                data_flow_times.append(video_flow_time / len(flow_images))
-                data_total_times.append((video_det_time + video_flow_time) / len(flow_images))
-
             # Store video running summary (time)
             data_det_times.append(video_det_time / len(video_frames))
 
@@ -200,16 +134,6 @@ if __name__ == '__main__':
         dict_data_speeds['avg_det_time'] = np.mean(data_det_times)
         dict_data_speeds['std_det_time'] = np.std(data_det_times)
 
-        if args.get_flows:
-            dict_data_speeds['min_flow_time'] = np.min(data_flow_times)
-            dict_data_speeds['max_flow_time'] = np.max(data_flow_times)
-            dict_data_speeds['avg_flow_time'] = np.mean(data_flow_times)
-            dict_data_speeds['std_flow_time'] = np.std(data_flow_times)
-
-            dict_data_speeds['min_total_time'] = np.min(data_total_times)
-            dict_data_speeds['max_total_time'] = np.max(data_total_times)
-            dict_data_speeds['avg_total_time'] = np.mean(data_total_times)
-            dict_data_speeds['std_total_time'] = np.std(data_total_times)
         report_speeds.append(dict_data_speeds)
 
     # Report results

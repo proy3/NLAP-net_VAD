@@ -20,7 +20,6 @@ warnings.filterwarnings('ignore')
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    util.add_bool_parser(parser, 'use_tf_determinism', ds.TENSORFLOW_DETERMINISM)
     parser.add_argument('--model', type=str, default=ds.DEFAULT_MODEL_CLS, help='Name of the model class.')
     util.add_bool_parser(parser, 'inference_mode', ds.INFERENCE_MODE)
     parser.add_argument('--pretrained_model', type=str, default=None, help='Folder containing model.')
@@ -29,10 +28,6 @@ if __name__ == '__main__':
     parser.add_argument('--first_n_epochs', type=int, default=ds.FIRST_N_EPOCHS, help='First n epochs.')
     util.add_bool_parser(parser, 'change_random_subset', ds.CHANGE_RANDOM_SUBSET)
     parser.add_argument('--change_subset_step', type=int, default=ds.CHANGE_SUBSET_STEP, help='Change subset step.')
-    parser.add_argument('--reduce_subset_step', type=int, default=ds.REDUCE_SUBSET_STEP, help='Reduce subset step.')
-    parser.add_argument('--reduce_subset_factor', type=float, default=ds.REDUCE_SUBSET_FACTOR, help='Reduce factor.')
-    parser.add_argument('--reduce_subset_min', type=int, default=ds.REDUCE_SUBSET_MIN, help='Reduce subset min.')
-    util.add_bool_parser(parser, 'reduce_easy_only', ds.REDUCE_EASY_ONLY)
     parser.add_argument('-d', '--dataset', type=str, default=ds.DEFAULT_DATASET, help='Name of the dataset.')
     parser.add_argument('--extract_datatype', type=str, default=ds.DEFAULT_DATATYPE_CLS, help='Extract data class.')
     parser.add_argument('--frame_diff_gap', type=int, default=ds.FRAME_DIFF_GAP, help='The temporal frame gap.')
@@ -42,11 +37,8 @@ if __name__ == '__main__':
     util.add_bool_parser(parser, 'normalize_images', ds.NORMALIZE_IMAGES)
     parser.add_argument('--frames_step', type=int, default=ds.FRAMES_STEP, help='The temporal frame step.')
     parser.add_argument('--det_model_name', type=str, default=ds.DEFAULT_DET_MODEL_NAME, help='Det model name.')
-    util.add_bool_parser(parser, 'use_motion', ds.USE_MOTION)
-    util.add_bool_parser(parser, 'holistic_method', ds.HOLISTIC_METHOD)
     util.add_bool_parser(parser, 'use_shared_encoders', ds.USE_SHARED_ENCODERS)
     util.add_bool_parser(parser, 'use_skip_connections', ds.USE_SKIP_CONNECTIONS)
-    util.add_bool_parser(parser, 'use_skip_diff', ds.USE_SKIP_DIFF)
     util.add_bool_parser(parser, 'use_adversarial_loss', ds.USE_ADVERSARIAL_LOSS)
     util.add_bool_parser(parser, 'smooth_adversarial_labels', ds.SMOOTH_ADVERSARIAL_LABELS)
     parser.add_argument('--batch_size', type=int, default=ds.DEFAULT_BATCH_SIZE, help='Batch size.')
@@ -82,7 +74,6 @@ if __name__ == '__main__':
     parser.add_argument('--score_method', type=str, default=ds.DEFAULT_SCORE_METHOD, help='Anomaly scoring method.')
     util.add_bool_parser(parser, 'score_use_grid', ds.DEFAULT_SCORE_USE_GRID)
     parser.add_argument('--score_grid_size', type=int, default=ds.DEFAULT_SCORE_GRID_SIZE, help='Scores grid size.')
-    parser.add_argument('--random_seed', type=int, default=ds.DEFAULT_RAND_SEED, help='Random seed value.')
 
     args = parser.parse_args()
 

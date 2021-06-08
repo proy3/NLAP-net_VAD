@@ -1,7 +1,6 @@
 """
 This script helps visualize the RoIs extracted from the estimated data.
 """
-import numpy as np
 import json
 import time
 import cv2
@@ -38,8 +37,6 @@ if __name__ == '__main__':
     parser.add_argument('--min_train_det_score', type=float, default=ds.DEFAULT_MIN_TRAIN_DET_SCORE)
     parser.add_argument('--min_test_det_score', type=float, default=ds.DEFAULT_MIN_TEST_DET_SCORE)
     parser.add_argument('--det_model_name', type=str, default=ds.DEFAULT_DET_MODEL_NAME, help='Det model name.')
-    util.add_bool_parser(parser, 'use_motion', ds.USE_MOTION)
-    util.add_bool_parser(parser, 'holistic', ds.HOLISTIC_METHOD)
     parser.add_argument('--n_frames_per_video', type=int, default=ds.DEFAULT_N_FRAMES_PER_VIDEO, help='Frames/video.')
     util.add_bool_parser(parser, 'normalize_images', ds.NORMALIZE_IMAGES)
     parser.add_argument('--n_samples_per_viz', type=int, default=ds.DEFAULT_N_SAMPLES_PER_VIZ, help='Frames/viz.')
