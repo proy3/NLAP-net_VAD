@@ -5,20 +5,13 @@ import os
 import warnings
 warnings.filterwarnings('ignore')
 
-TENSORFLOW_DETERMINISM = True
-
 # Root directory:
 root_dir = os.getcwd()
-
-# Default seed which will be used everywhere for reproducing results.
-# It corresponds to the sum of four numbers which are the sums of the cubes of their digits.
-DEFAULT_RAND_SEED = 153 + 370 + 371 + 407
 
 DEFAULT_DATASET = 'shanghaitech'
 
 DEFAULT_DATATYPE_CLS = 'MAData'
 DEFAULT_MODEL_CLS = 'NextPredictionNet'
-DEFAULT_AE_MODEL_CLS = 'ObjectCentricCAEs'
 
 DEFAULT_MIN_DET_SCORE = 0.5
 DEFAULT_MIN_TRAIN_DET_SCORE = 0.5
@@ -33,15 +26,9 @@ FRAME_SIZE = 128
 FRAME_DIFF_GAP = 3
 DEFAULT_N_FRAMES_PER_VIDEO = 10
 NORMALIZE_IMAGES = False
-MAX_NORM_VAL = 1
-MIN_NORM_VAL = 0
 MAX_NORM = 1.0
 MIN_NORM = 0.0
 FRAMES_STEP = 1
-
-USE_MOTION = False
-
-HOLISTIC_METHOD = False
 
 INFERENCE_MODE = False
 
@@ -49,10 +36,6 @@ RANDOM_SUBSET_TRAINING = False
 
 NEW_TRAINING_SCHEME = False
 FIRST_N_EPOCHS = 10
-REDUCE_SUBSET_STEP = 5
-REDUCE_SUBSET_FACTOR = 0.7
-REDUCE_SUBSET_MIN = 40
-REDUCE_EASY_ONLY = True
 
 CHANGE_RANDOM_SUBSET = False
 CHANGE_SUBSET_STEP = 20
@@ -62,14 +45,10 @@ HORIZONTAL_MARGIN_SIZE = 10
 VERTICAL_MARGIN_SIZE = 5
 
 # Network architecture
-USE_CROSS_DOMAIN_GENERATORS = True  # If false, use Auto-Encoders
 USE_SHARED_ENCODERS = True
 USE_SKIP_CONNECTIONS = True  # Between encoder and decoder of each generators
-USE_SKIP_DIFF = False
 USE_CONSISTENCY_LOSS = True  # Does not make sense when USE_CROSS_DOMAIN_GENERATORS is false
 USE_ADVERSARIAL_LOSS = True  # Use GAN for training the generators
-
-USE_INTENSITY_ONLY = True
 
 SMOOTH_ADVERSARIAL_LABELS = True
 
@@ -122,7 +101,7 @@ USE_SVM_MODELS = True
 DEFAULT_N_SVM_MODELS = 10
 
 SCORE_AUTO_NAME = 'auto'
-SCORE_METHODS = ['mae', 'mse', 'vse', 'ssim', 'psnr', 'nrmse']
+SCORE_METHODS = ['mae', 'mse', 'ssim', 'psnr', 'nrmse']
 
 IMAGE_EXTENSIONS = ['.ras', '.xwd', '.bmp', '.jpe', '.jpg', '.jpeg', '.xpm', '.ief', '.pbm', '.tif', '.gif',
                     '.ppm', '.xbm', '.tiff', '.rgb', '.pgm', '.png', '.pnm']
@@ -134,21 +113,16 @@ ESTIMATIONS_PATH = os.environ['Estimations_ROOT']
 TEMP_PATH = os.environ['Temp_ROOT']
 
 DET_METHOD_NAME = 'CenterNet'
-FLOW_METHOD_NAME = 'FlowNet2'
 
 DEFAULT_DET_TASK = 'ctdet'  # or 'multi_pose' for human pose estimation
 DEFAULT_DET_DATASET = 'coco'
-DEFAULT_DET_ARCH = 'hourglass'  # 'hourglass'
-DEFAULT_DET_MODEL = 'dla_2x'
+DEFAULT_DET_ARCH = 'hourglass'  # 'dla_34'
 DET_MODEL_NAMES = {'dla_34': 'dla_2x', 'hourglass': 'hg'}
-
-DEFAULT_FLOW_ARCH = 'FlowNet2'
 
 FRAMES_FILENAME = 'frames.npy'
 DET_FILENAMES = {'ctdet_coco_hg': 'detections.npy',
                  'ctdet_coco_dla_2x': 'detections_v2.npy'}
 DEFAULT_DET_MODEL_NAME = f'{DEFAULT_DET_TASK}_{DEFAULT_DET_DATASET}_{DET_MODEL_NAMES[DEFAULT_DET_ARCH]}'
-FLOW_FILENAME = 'motion_flows.npy'
 
 TRAIN_DIRNAME = 'training'
 TEST_DIRNAME = 'testing'
