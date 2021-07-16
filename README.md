@@ -1,8 +1,8 @@
 # Predicting Next Local Appearance for Video Anomaly Detection
 This repository contains the source code of [Predicting Next Local Appearance for Video Anomaly Detection, accepted for MVA 2021](https://arxiv.org/pdf/2106.06059.pdf) by Pankaj Raj Roy, Guillaume-Alexandre Bilodeau and Lama Seoud. The corresponding slides, poster and video will be available soon.
 <p align="middle">
-  <img src="figures/method_overview.png" width="100" />
-  <img src="figures/network_overview.png" width="100" />
+  <img src="figures/method_overview.png" width="49%" />
+  <img src="figures/network_overview.png" width="49%" />
 </p>
 
 We used TensorFlow/Keras to implement our proposed framework. Please follow the given instructions to run the code.
