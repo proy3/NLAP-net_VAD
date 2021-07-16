@@ -63,14 +63,11 @@ python train_test_model.py --inference_mode --pretrained_model 2021-04-06_06h08m
 * More details coming soon.
 
 ## Citation
-Please cite our paper if you find this useful.
-```shell
-@misc{roy2021nlap,
-      title={Predicting Next Local Appearance for Video Anomaly Detection}, 
+Please cite our paper if you find this project useful.
+
+    @inproceedings{roy2021nlap,
+      title={Predicting Next Local Appearance for Video Anomaly Detection},
       author={Pankaj Raj Roy and Guillaume-Alexandre Bilodeau and Lama Seoud},
-      year={2021},
-      eprint={2106.06059},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
-}
-```
+      booktitle={arXiv preprint arXiv:2106.06059},
+      year={2021}
+    }
